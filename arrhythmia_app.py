@@ -1,8 +1,3 @@
-import pandas as pd
-import numpy as np
-import streamlit as st
-print("success1")
-#st.title("AI-Enhanced ECG Arrhythmia Classification ")
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -31,9 +26,8 @@ body {
 """
 st.markdown(custom_css, unsafe_allow_html=True)
 st.title("AI-Enhanced ECG Arrhythmia Classification ")
-train_df=pd.read_csv("D:\mitbih_train.csv")
-test_df=pd.read_csv("D:\mitbih_test.csv")
-import pandas as pd
+train_df=pd.read_csv("mitbih_sample_train.csv")
+
 st.header('ECTOPIC BEATS')
 st.write("An ectopic beat, also known as premature ventricular contraction (PVC) or premature atrial contraction (PAC), refers to an irregularity in the heart's rhythm. Non-ectopicly, the heart's electrical system generates rhythmic impulses that coordinate the heartbeats.")
 html_temp="""
@@ -43,16 +37,14 @@ html_temp="""
 """
 st.markdown(html_temp,unsafe_allow_html=True)
 train_df.columns =[i for i in range(188)]
-test_df.columns =[i for i in range(188)]
-#st.write(train_df.head())
-#st.write(test_df.head())
+
 
 st.sidebar.header('User Inputs')
 selected_analysis = st.sidebar.selectbox('Select your choice:', ['Test Your ECG','Study Different Ectopic Beats'])
 
 @st.cache_resource
 def load_model():
-    return tf.keras.models.load_model("C:\\Users\\saray\\OneDrive\\Desktop\\mymodel_idt.h5")
+    return tf.keras.models.load_model("mymodel_idt.h5")
 
 mod = load_model()
 
@@ -61,15 +53,11 @@ if (selected_analysis=='Study Different Ectopic Beats'):
     
     selected_beats = st.sidebar.selectbox('choose type of arrhythmia:', ['Non-Ectopic Beats', 'Supraventricular Ectopic Beats','Venticular Ectopic Beats','Fusion Beats','Unknown Beats'])
 
-    #to study the differente classes
-    samp=train_df.groupby(187,group_keys=False).apply(lambda train_df : train_df.sample(1))
-    #st.write(samp)
-    
     def plot(i):
         x2= np.arange(186)
         fig2, axes2 = plt.subplots()
         
-        axes2.plot(x2,samp.iloc[i,:186])
+        axes2.plot(x2,train_df.iloc[i,:186])
         
         axes2.set_title(selected_beats)
         axes2.set_xlabel("Time in decaseconds")
@@ -238,4 +226,3 @@ if(selected_analysis=='Test Your ECG'):
             #st.markdown("<p style='color: blue;'> Your ECG recording is classified to be <b>Unknown beats</b>.</p>",unsafe_allow_html=True)
             #st.write("Your ECG recording is classified to be Unknown beats. ")
             st.write("Unknown beats are typically categorized as high risk since they raise the possibility of a serious arrhythmia or leads to cardiovascular complications.")
-print("success1")
